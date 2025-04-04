@@ -9,6 +9,7 @@ type WebViewContextType = {
   addMessageHandler: (handler: (message: string) => void) => void;
   removeMessageHandler: (handler: (message: string) => void) => void;
   removeAllHandlers: () => void;
+  injectTemporaryScript: (script: string) => void;
 };
 
 const WebViewContext = createContext<WebViewContextType | undefined>(undefined);
@@ -56,6 +57,24 @@ export const WebViewProvider: React.FC<{ children: React.ReactNode }> = ({
         setMessageHandlers((prev) => prev.filter((h) => h !== handler));
       },
       removeAllHandlers: removeAllHandlers,
+      injectTemporaryScript: (script: string) => {
+        const tempScript = `
+          (function() {
+            try {
+              ${script}
+            } catch (e) {
+              console.error('Temporary script error:', e);
+            }
+          })();
+          true; // Nécessaire pour le retour de la méthode injectJavaScript
+        `;
+
+        setInjectedScripts((prev) => [...prev, tempScript]);
+
+        setTimeout(() => {
+          setInjectedScripts((prev) => prev.filter((s) => s !== tempScript));
+        }, 1000);
+      },
     }),
     [injectedScripts, injectedStyles, messageHandlers]
   );

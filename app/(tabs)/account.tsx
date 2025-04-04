@@ -2,9 +2,19 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useUser } from "@/components/context/AuthContext";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useWebView } from "@/components/context/WebViewContext";
+import { useRouter } from "expo-router";
 
 const UserStatusScreen = () => {
   const { isConnected, user } = useUser();
+  const router = useRouter();
+
+  const redirectToWebViewPage = (url: string) => {
+    router.push({
+      pathname: "/(tabs)",
+      params: { url },
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -18,9 +28,6 @@ const UserStatusScreen = () => {
             <Text style={styles.subtitle}>
               Connectez-vous pour accéder à toutes les fonctionnalités
             </Text>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Se connecter</Text>
-            </TouchableOpacity>
           </>
         )}
 
@@ -46,12 +53,28 @@ const UserStatusScreen = () => {
               <MaterialIcons name="fingerprint" size={20} color="#555" />
               <Text style={styles.infoText}>ID: {user.id}</Text>
             </View>
-            {/* <TouchableOpacity style={[styles.button, styles.logoutButton]}>
-              <Text style={styles.buttonText}>Déconnexion</Text>
-            </TouchableOpacity> */}
           </>
         )}
       </View>
+      {isConnected ? (
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={() =>
+            redirectToWebViewPage("https://www.intersport.fr/logout")
+          }
+        >
+          <Text style={styles.buttonText}>Déconnexion</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            redirectToWebViewPage("https://www.intersport.fr/login")
+          }
+        >
+          <Text style={styles.buttonText}>Se connecter</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -2,8 +2,10 @@ import { useWebViewCookies } from "@/components/hook/useWebViewCookie";
 import { useWebViewStyles } from "@/components/hook/useWebViewStyle";
 import WebViewWrapper from "@/components/provider/WebViewProvider";
 import ScreenWrapper from "@/components/ui/ScreenWrapper";
+import { useLocalSearchParams } from "expo-router";
 import React, { useRef } from "react";
 import { StyleSheet } from "react-native";
+import WebView from "react-native-webview";
 
 const MAIN_URI = "https://www.intersport.fr";
 
@@ -11,30 +13,35 @@ const customCSS = `
   .header-nav__top { 
     background-color: darkturquoise !important; 
   }
-  
-  /* Ajoutez d'autres styles ici */
 `;
 
 export default function WebViewScreen() {
-  const webViewRef = useRef<any>(null);
   useWebViewCookies();
   useWebViewStyles(customCSS);
 
   return (
     <ScreenWrapper style={styles.safeAreaContainer}>
-      <WebViewContent ref={webViewRef} />
+      <WebViewContent />
     </ScreenWrapper>
   );
 }
 
+type WebViewParams = {
+  url?: string;
+};
+
 const WebViewContent = React.forwardRef((props, ref) => {
+  const params = useLocalSearchParams<WebViewParams>();
+
+  const initialUrl = params?.url || "https://www.intersport.fr";
   const handleMessage = (event: any) => {
     console.log("Message from WebView:", event.nativeEvent.data);
   };
 
   return (
     <WebViewWrapper
-      source={{ uri: MAIN_URI }}
+      ref={ref as React.RefObject<WebView>}
+      source={{ uri: initialUrl || MAIN_URI }}
       style={styles.webView}
       javaScriptEnabled={true}
       domStorageEnabled={true}
