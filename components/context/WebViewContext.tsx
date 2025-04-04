@@ -8,6 +8,7 @@ type WebViewContextType = {
   injectStyle: (css: string) => string;
   addMessageHandler: (handler: (message: string) => void) => void;
   removeMessageHandler: (handler: (message: string) => void) => void;
+  removeAllHandlers: () => void;
 };
 
 const WebViewContext = createContext<WebViewContextType | undefined>(undefined);
@@ -20,6 +21,12 @@ export const WebViewProvider: React.FC<{ children: React.ReactNode }> = ({
   >([]);
   const [injectedScripts, setInjectedScripts] = useState<string[]>([]);
   const [injectedStyles, setInjectedStyles] = useState<string[]>([]);
+
+  const removeAllHandlers = () => {
+    setMessageHandlers([]);
+    setInjectedScripts([]);
+    setInjectedStyles([]);
+  };
 
   const contextValue = useMemo<WebViewContextType>(
     () => ({
@@ -48,6 +55,7 @@ export const WebViewProvider: React.FC<{ children: React.ReactNode }> = ({
       removeMessageHandler: (handler: (message: string) => void) => {
         setMessageHandlers((prev) => prev.filter((h) => h !== handler));
       },
+      removeAllHandlers: removeAllHandlers,
     }),
     [injectedScripts, injectedStyles, messageHandlers]
   );

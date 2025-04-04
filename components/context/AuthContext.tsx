@@ -13,6 +13,8 @@ interface UserContextType {
   setIsConnected: (isConnected: boolean) => void;
   login: (token: string) => void;
   logout: () => void;
+  setUser: (user: User | null) => void;
+  user: User | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -21,14 +23,18 @@ interface UserProviderProps {
   children: ReactNode;
 }
 
+interface User {
+  email: string;
+  name: string;
+  id: string;
+}
+
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    console.log(
-      "_________________________________________________________________________________________________________"
-    );
     const fetchToken = async () => {
       const savedToken = await AsyncStorage.getItem("userToken");
       if (savedToken) {
@@ -53,7 +59,15 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   return (
     <UserContext.Provider
-      value={{ isConnected, token, login, logout, setIsConnected }}
+      value={{
+        isConnected,
+        token,
+        login,
+        logout,
+        setIsConnected,
+        setUser,
+        user,
+      }}
     >
       {children}
     </UserContext.Provider>
