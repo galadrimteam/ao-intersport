@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import { WebView, WebViewProps } from "react-native-webview";
+import { WebView, WebViewNavigation, WebViewProps } from "react-native-webview";
 import { useWebView } from "../context/WebViewContext";
+import { useRouter } from "expo-router";
 
 export type WebViewWrapperHandle = {
   injectJavaScript: (script: string) => void;
@@ -9,6 +10,7 @@ export type WebViewWrapperHandle = {
 const WebViewWrapper = forwardRef<WebViewWrapperHandle, WebViewProps>(
   (props, ref) => {
     const webViewRef = useRef<WebView>(null);
+    const router = useRouter();
     const { injectedScripts, injectedStyles, messageHandlers } = useWebView();
 
     useImperativeHandle(ref, () => ({
@@ -37,6 +39,25 @@ const WebViewWrapper = forwardRef<WebViewWrapperHandle, WebViewProps>(
       props.onLoadEnd?.(mockup);
     };
 
+    const handleNavigationStateChange = (navState: WebViewNavigation) => {
+      if (
+        navState.url.includes("https://www.intersport.fr/my-account/profile/")
+      ) {
+        console.log("Bloquage de la navigation vers le profil");
+
+        webViewRef.current?.stopLoading();
+
+        router.push("/(tabs)/account");
+
+        webViewRef.current?.injectJavaScript(`
+          window.history.back();
+          true;
+        `);
+
+        return;
+      }
+    };
+
     return (
       <WebView
         ref={webViewRef}
@@ -44,6 +65,11 @@ const WebViewWrapper = forwardRef<WebViewWrapperHandle, WebViewProps>(
         onLoadEnd={onLoadEnd}
         injectedJavaScript={combinedInjectedJavaScript}
         onMessage={handleMessage}
+        onNavigationStateChange={(navState) => {
+          if (navState.url) {
+            handleNavigationStateChange(navState);
+          }
+        }}
       />
     );
   }
