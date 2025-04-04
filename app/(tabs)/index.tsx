@@ -3,7 +3,7 @@ import { useWebViewStyles } from "@/components/hook/useWebViewStyle";
 import WebViewWrapper from "@/components/provider/WebViewProvider";
 import ScreenWrapper from "@/components/ui/ScreenWrapper";
 import { useLocalSearchParams } from "expo-router";
-import React, { useRef } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 import WebView from "react-native-webview";
 
