@@ -20,7 +20,7 @@ export default function WebViewScreen() {
   useWebViewStyles(customCSS);
 
   return (
-    <ScreenWrapper style={styles.safeAreaContainer}>
+    <ScreenWrapper>
       <WebViewContent />
     </ScreenWrapper>
   );
@@ -61,9 +61,6 @@ const WebViewContent = React.forwardRef((props, ref) => {
 });
 
 const styles = StyleSheet.create({
-  safeAreaContainer: {
-    flex: 1,
-  },
   webView: {
     flex: 1,
   },

@@ -17,7 +17,6 @@ export default function ScreenWrapper({
   ...props
 }: ScreenWrapperProps) {
   const { top, bottom } = useSafeAreaInsets();
-  const bottomSafeAndroid = Platform.OS === "android" ? bottom + 16 : bottom;
 
   return (
     <View style={{ flex: 1 }} {...props}>
@@ -37,7 +36,7 @@ export default function ScreenWrapper({
         <View
           style={{
             flex: 0,
-            paddingBottom: bottomSafeAndroid,
+            paddingBottom: bottom,
           }}
           className={bottomBackgroundClassName}
         />

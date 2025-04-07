@@ -1,3 +1,4 @@
+import { ScanResultModal } from "@/components/modal/ScanResultModal";
 import ScreenWrapper from "@/components/ui/ScreenWrapper";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
@@ -15,21 +16,24 @@ export default function App() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedEnabled, setScannedEnabled] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [scanData, setScanData] = useState<string | null>(null);
   const scanningInProgress = useRef(false);
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
         <Text style={styles.message}>
-          We need your permission to show the camera
+          Nous avons besoin de votre permission pour afficher la caméra
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button
+          onPress={requestPermission}
+          title="Autoriser l'accès à la caméra"
+        />
       </View>
     );
   }
@@ -41,6 +45,7 @@ export default function App() {
   const resetScanner = () => {
     scanningInProgress.current = false;
     setScannedEnabled(true);
+    setScanData(null);
   };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
@@ -50,15 +55,19 @@ export default function App() {
       scanningInProgress.current = true;
       Vibration.vibrate(100);
       setScannedEnabled(false);
-      Alert.alert("Code bar scanné : ", data);
-      setTimeout(() => {
-        resetScanner();
-      }, 1000);
+      setScanData(data);
+      setModalVisible(true);
     } catch (error) {
       console.error(error);
       resetScanner();
     }
   };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    resetScanner();
+  };
+
   return (
     <ScreenWrapper style={styles.container}>
       <CameraView
@@ -81,10 +90,15 @@ export default function App() {
       >
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+            <Text style={styles.text}>Inverser Caméra</Text>
           </TouchableOpacity>
         </View>
       </CameraView>
+      <ScanResultModal
+        visible={modalVisible}
+        data={scanData}
+        onClose={handleCloseModal}
+      />
     </ScreenWrapper>
   );
 }

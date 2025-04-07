@@ -24,9 +24,6 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    console.log(
-      "__________________________A_________________________________________________________________________"
-    );
     NavigationBar.setVisibilityAsync("hidden");
     NavigationBar.setBehaviorAsync("overlay-swipe");
     if (loaded) {
