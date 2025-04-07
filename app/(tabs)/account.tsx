@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Button,
 } from "react-native";
 import { useUser } from "@/components/context/AuthContext";
 import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
@@ -84,38 +85,50 @@ const UserStatusScreen = () => {
                 <Text style={styles.infoText}>ID: {user.id}</Text>
               </View>
 
-              {storeInfo && (
-                <View style={styles.storeCard}>
-                  <View style={styles.storeHeader}>
-                    <FontAwesome5 name="store" size={20} color="#4E7AC7" />
-                    <Text style={styles.storeTitle}>Votre magasin favori</Text>
-                  </View>
-
-                  <Text style={styles.storeName}>{storeInfo.name}</Text>
-
-                  {todayHours && (
-                    <View style={styles.hoursContainer}>
-                      <MaterialIcons
-                        name="access-time"
-                        size={16}
-                        color="#4E7AC7"
-                      />
-                      <Text style={styles.hoursText}>
-                        Aujourd'hui: {todayHours.ot1} - {todayHours.ct1}
-                      </Text>
-                    </View>
-                  )}
-
-                  {storeInfo.address && (
-                    <View style={styles.addressContainer}>
-                      <MaterialIcons name="place" size={16} color="#4E7AC7" />
-                      <Text style={styles.addressText}>
-                        {storeInfo.address}
-                      </Text>
-                    </View>
-                  )}
+              <View style={styles.storeCard}>
+                <View style={styles.storeHeader}>
+                  <FontAwesome5 name="store" size={20} color="#4E7AC7" />
+                  <Text style={styles.storeTitle}>Votre magasin favori</Text>
                 </View>
-              )}
+                {storeInfo && (
+                  <>
+                    <Text style={styles.storeName}>{storeInfo.name}</Text>
+
+                    {todayHours && (
+                      <View style={styles.hoursContainer}>
+                        <MaterialIcons
+                          name="access-time"
+                          size={16}
+                          color="#4E7AC7"
+                        />
+                        <Text style={styles.hoursText}>
+                          Aujourd'hui: {todayHours.ot1} - {todayHours.ct1}
+                        </Text>
+                      </View>
+                    )}
+
+                    {storeInfo.address && (
+                      <View style={styles.addressContainer}>
+                        <MaterialIcons name="place" size={16} color="#4E7AC7" />
+                        <Text style={styles.addressText}>
+                          {storeInfo.address}
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                )}
+                <View style={styles.storeAction}>
+                  <Button
+                    title={storeInfo ? "Modifier" : "Ajouter un magasin favori"}
+                    color="#4E7AC7"
+                    onPress={() =>
+                      redirectToWebViewPage(
+                        "https://www.intersport.fr/my-account/mystore/"
+                      )
+                    }
+                  />
+                </View>
+              </View>
             </>
           )}
         </View>
@@ -282,6 +295,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+  },
+  storeAction: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });
 
