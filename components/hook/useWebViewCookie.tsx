@@ -5,7 +5,7 @@ import { useUser } from "../context/AuthContext";
 export const useWebViewCookies = () => {
   const { injectScript, addMessageHandler, removeMessageHandler } =
     useWebView();
-  const { setIsConnected, setUser } = useUser();
+  const { setIsConnected, setUser, setFavoriteStore } = useUser();
 
   // Mémoïsez le handler pour éviter des recréations
   const messageHandler = useCallback(
@@ -22,6 +22,11 @@ export const useWebViewCookies = () => {
         const name = decodeURIComponent(cookieValue[1]).replace(",", " ");
         const id = atob(cookieValue[2]);
         setUser({ email, name, id });
+      } else if (message.startsWith("customerFavoriteStore=")) {
+        const favoriteStore = decodeURIComponent(
+          message.replace("customerFavoriteStore=", "")
+        );
+        setFavoriteStore(favoriteStore);
       }
     },
     [setIsConnected]
@@ -35,10 +40,12 @@ export const useWebViewCookies = () => {
           const cookies = document.cookie;
           const isConnected = cookies.includes('customerInformations');
           const cookieValue = document.cookie.split('; ').find(row => row.startsWith('customerInformations='));
+          const favoriteStore = document.cookie.split('; ').find(row => row.startsWith('customerFavoriteStore='));
           if (lastState !== isConnected) {
             lastState = isConnected;
             window.ReactNativeWebView.postMessage(isConnected ? 'cookie:connected' : 'cookie:not_connected');
             window.ReactNativeWebView.postMessage(cookieValue);
+            window.ReactNativeWebView.postMessage(favoriteStore);
           }
         }
         checkCookie();

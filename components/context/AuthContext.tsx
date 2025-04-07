@@ -15,6 +15,8 @@ interface UserContextType {
   logout: () => void;
   setUser: (user: User | null) => void;
   user: User | null;
+  favoriteStore: string | null;
+  setFavoriteStore: (favoriteStore: string | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -33,6 +35,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [favoriteStore, setFavoriteStore] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -67,6 +70,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         setIsConnected,
         setUser,
         user,
+        setFavoriteStore,
+        favoriteStore,
       }}
     >
       {children}
