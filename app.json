@@ -17,7 +17,6 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.CAMERA",
         "android.permission.CAMERA"
       ]
     },
@@ -59,7 +58,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "7d7c7144-4a7c-4399-a047-84ed4dd5d42c"
+        "projectId": "f13a4e41-74b5-4bdc-9f5b-5703e5d63525"
       }
     },
     "runtimeVersion": {
@@ -67,6 +66,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/7d7c7144-4a7c-4399-a047-84ed4dd5d42c"
-    }
+    },
+    "owner": "intersport"
   }
 }
