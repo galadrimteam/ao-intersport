@@ -66,7 +66,7 @@ export const WebViewProvider: React.FC<{ children: React.ReactNode }> = ({
               console.error('Temporary script error:', e);
             }
           })();
-          true; // Nécessaire pour le retour de la méthode injectJavaScript
+          true; // Nécessaire pour le retour de la méthode injectJavaScript pour android
         `;
 
         setInjectedScripts((prev) => [...prev, tempScript]);

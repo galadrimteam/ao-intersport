@@ -10,7 +10,6 @@ export const useWebViewCookies = () => {
   // Mémoïsez le handler pour éviter des recréations
   const messageHandler = useCallback(
     (message: string) => {
-      console.log("Message received:", message);
       if (message === "cookie:connected") {
         setIsConnected(true);
       } else if (message === "cookie:not_connected") {

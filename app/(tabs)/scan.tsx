@@ -49,7 +49,10 @@ export default function App() {
   };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (!scannedEnabled || scanningInProgress.current) return;
+    if (!scannedEnabled || scanningInProgress.current) {
+      setTimeout(() => resetScanner(), 1000);
+      return;
+    }
 
     try {
       scanningInProgress.current = true;

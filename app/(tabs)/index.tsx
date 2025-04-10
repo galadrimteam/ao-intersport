@@ -10,7 +10,7 @@ import WebView from "react-native-webview";
 const MAIN_URI = "https://www.intersport.fr";
 
 const customCSS = `
-  .header-nav__top { 
+  .header-nav__top {
     background-color: darkturquoise !important; 
   }
 `;
@@ -18,7 +18,6 @@ const customCSS = `
 export default function WebViewScreen() {
   useWebViewCookies();
   useWebViewStyles(customCSS);
-
   return (
     <ScreenWrapper>
       <WebViewContent />
@@ -27,13 +26,27 @@ export default function WebViewScreen() {
 }
 
 type WebViewParams = {
-  url?: string;
+  url?: string | string[];
+  timestamp?: string | string[];
+};
+
+const getUrl = (params?: WebViewParams) => {
+  if (!params?.url) return MAIN_URI;
+  return Array.isArray(params.url) ? params.url[0] : params.url;
+};
+
+const getTimestamp = (params?: WebViewParams) => {
+  if (!params?.timestamp) return Date.now().toString();
+  return Array.isArray(params.timestamp)
+    ? params.timestamp[0]
+    : params.timestamp;
 };
 
 const WebViewContent = React.forwardRef((props, ref) => {
   const params = useLocalSearchParams<WebViewParams>();
+  const initialUrl = getUrl(params);
+  const timestamp = getTimestamp(params);
 
-  const initialUrl = params?.url || "https://www.intersport.fr";
   const handleMessage = (event: any) => {
     console.log("Message from WebView:", event.nativeEvent.data);
   };
@@ -41,8 +54,9 @@ const WebViewContent = React.forwardRef((props, ref) => {
   return (
     <WebViewWrapper
       ref={ref as React.RefObject<WebView>}
-      source={{ uri: initialUrl || MAIN_URI }}
+      source={{ uri: initialUrl }}
       style={styles.webView}
+      key={timestamp}
       javaScriptEnabled={true}
       domStorageEnabled={true}
       onMessage={handleMessage}

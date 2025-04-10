@@ -17,9 +17,9 @@ const UserStatusScreen = () => {
   const router = useRouter();
 
   const redirectToWebViewPage = (url: string) => {
-    router.push({
+    router.replace({
       pathname: "/(tabs)",
-      params: { url },
+      params: { url, timestamp: Date.now() },
     });
   };
 
