@@ -3,7 +3,6 @@ import ScreenWrapper from "@/components/ui/ScreenWrapper";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import {
-  Alert,
   Button,
   StyleSheet,
   Text,
